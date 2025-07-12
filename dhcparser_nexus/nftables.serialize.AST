@@ -1,0 +1,150 @@
+(syntax
+  (definition
+    (symbol
+      (SYM_REGEX "NEWLINE"))
+    (DEF "::=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal "'\n'")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "SEMICOLON"))
+    (DEF "::=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal "':'")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "LINEFEED"))
+    (DEF "::=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "NEWLINE"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "neelex"))
+    (DEF "::=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "NEWLINE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "SEMICOLON"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "belena"))
+    (DEF "::=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "NEWLINE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "SEMICOLON"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "LINEFEED"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "mY_statement"))
+    (DEF "::=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "NEWLINE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "SEMICOLON")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "SEMICOLON"))))))))
+                  (:Text ")"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "your_line"))
+    (DEF "::=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "NEWLINE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "SEMICOLON")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "SEMICOLON"))))))))
+    (ENDL)))

@@ -1,0 +1,16 @@
+
+NEWLINE ::= '\n'
+
+SEMICOLON ::= ':'
+
+LINEFEED ::= NEWLINE
+
+neelex ::= NEWLINE SEMICOLON
+
+belena ::= NEWLINE SEMICOLON LINEFEED
+
+mY_statement ::= NEWLINE ( SEMICOLON | SEMICOLON )
+
+
+your_line  ::= NEWLINE SEMICOLON | SEMICOLON
+

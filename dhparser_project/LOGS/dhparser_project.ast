@@ -1,0 +1,3672 @@
+(syntax
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "optimizations"))
+    (:Text "=")
+    (symbol
+      (SYM_REGEX "all")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "comment"))
+    (:Text "=")
+    (regexp
+      (RE_LEADIN "/")
+      (RE_CORE "(?!#x[A-Fa-f0-9])#.*(?:\n|$)|\/\*(?:.|\n)*?\*\/|\(\*(?:.|\n)*?\*\)")
+      (RE_LEADOUT "/")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "whitespace"))
+    (:Text "=")
+    (regexp
+      (RE_LEADIN "/")
+      (RE_CORE "\s*")
+      (RE_LEADOUT "/")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "literalws"))
+    (:Text "=")
+    (symbol
+      (SYM_REGEX "right")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "hide"))
+    (:Text "=")
+    (symbol
+      (SYM_REGEX "is_mdef"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "component"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "pure_elem"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "countable"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "no_range"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "FOLLOW_UP"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "MOD_SYM"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "MOD_SEP"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "ANY_SUFFIX"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "EOF")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "drop"))
+    (:Text "=")
+    (symbol
+      (SYM_REGEX "whitespace"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "MOD_SYM"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "EOF"))
+    (:Text ",")
+    (symbol
+      (SYM_REGEX "no_range")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "RNG_BRACE_filter"))
+    (:Text "=")
+    (procedure
+      (SYM_REGEX "matching_bracket")
+      (:Text "()")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "definition_resume"))
+    (:Text "=")
+    (regexp
+      (RE_LEADIN "/")
+      (RE_CORE "\n\s*(?=@|\w+\w*\s*=)")
+      (RE_LEADOUT "/")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "directive_resume"))
+    (:Text "=")
+    (regexp
+      (RE_LEADIN "/")
+      (RE_CORE "\n\s*(?=@|\w+\w*\s*=)")
+      (RE_LEADOUT "/")))
+  (directive
+    (:Text "@")
+    (symbol
+      (SYM_REGEX "definition_error"))
+    (:Text "=")
+    (regexp
+      (RE_LEADIN "/")
+      (RE_CORE ",")
+      (RE_LEADOUT "/"))
+    (:Text ",")
+    (literals
+      (literal "'Delimiter \",\" not expected in definition!\nEither this was meant to '")
+      (literal "'be a directive and the directive symbol @ is missing\nor the error is '")
+      (literal "'due to inconsistent use of the comma as a delimiter\nfor the elements '")
+      (literal "'of a sequence.'")))
+  (definition
+    (symbol
+      (SYM_REGEX "syntax"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "definition")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "directive")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "macrodef"))))))))
+                (:Text "}")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "EOF"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "definition"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "modifier"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "symbol"))))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "DEF"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":")
+                            (symbol
+                              (SYM_REGEX "OR"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "MOD_SYM"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "hide"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "ENDL"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "FOLLOW_UP")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "modifier"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "drop")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (option
+                              (:Text "[")
+                              (expression
+                                (sequence
+                                  (interleave
+                                    (difference
+                                      (term
+                                        (element
+                                          (symbol
+                                            (SYM_REGEX "hide"))))))))
+                              (:Text "]")))))))
+                  (:Text ")"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "MOD_SEP"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "is_def"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "MOD_SEP"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "symbol"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "DEF")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "MOD_SEP"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "is_mdef"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "_is_def"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "MOD_SEP"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "symbol"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "_DEF")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "MOD_SEP"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "is_mdef"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "MOD_SEP"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE " *: *")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "directive"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"@"')))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "symbol"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"="')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "component"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '","')))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "component"))))))))
+                (:Text "}")))))
+        (AND)
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "FOLLOW_UP")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "component"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "regexp")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "literals")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "procedure")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "symbol"))))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "_DEF")))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "_is_def"))))))
+      (OR "|")
+      (sequence
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (plaintext "`$`"))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "is_mdef")))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "placeholder"))))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "is_def"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"("')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '")"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "RAISE_EXPR_WO_BRACKETS"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "literals"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (oneormore
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "literal"))))))))
+                (:Text "}+")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "procedure"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "SYM_REGEX"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"()"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "macrodef"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "modifier"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"$"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "name"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '"("')))))
+                    (AND)
+                    (:Text "§")
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "placeholder"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (repetition
+                            (:Text "{")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (literal '","')))))
+                                (AND)
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (symbol
+                                          (SYM_REGEX "placeholder"))))))))
+                            (:Text "}")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '")"')))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "DEF"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "OR"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "macrobody"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "MOD_SYM"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "hide"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "ENDL"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "FOLLOW_UP")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "macrobody"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "is_mdef"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"$"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "name"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '"("')))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "placeholder"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (repetition
+                            (:Text "{")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (literal '","')))))
+                                (AND)
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (symbol
+                                          (SYM_REGEX "placeholder"))))))))
+                            (:Text "}")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '")"')))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "DEF"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "FOLLOW_UP"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`@`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`$`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "modifier")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "symbol")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "EOF"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "expression"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "sequence"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":")
+                            (symbol
+                              (SYM_REGEX "OR"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "sequence"))))))))
+                (:Text "}")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "sequence"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '"§"')))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "interleave")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "lookaround"))))))))
+                  (:Text ")"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (lookaround
+                      (flowmarker "!")
+                      (part
+                        (element
+                          (plaintext "`@`"))))
+                    (AND)
+                    (lookaround
+                      (flowmarker "!")
+                      (part
+                        (element
+                          (group
+                            (:Text "(")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (symbol
+                                          (SYM_REGEX "symbol"))))))
+                                (AND)
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (retrieveop ":")
+                                        (symbol
+                                          (SYM_REGEX "DEF"))))))))
+                            (:Text ")")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":")
+                            (symbol
+                              (SYM_REGEX "AND"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (option
+                            (:Text "[")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (literal '"§"')))))))
+                            (:Text "]")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (group
+                              (:Text "(")
+                              (expression
+                                (sequence
+                                  (interleave
+                                    (difference
+                                      (term
+                                        (element
+                                          (symbol
+                                            (SYM_REGEX "interleave")))))))
+                                (OR "|")
+                                (sequence
+                                  (interleave
+                                    (difference
+                                      (term
+                                        (element
+                                          (symbol
+                                            (SYM_REGEX "lookaround"))))))))
+                              (:Text ")"))))))))
+                (:Text "}")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "interleave"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "difference"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '"°"')))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (option
+                            (:Text "[")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (literal '"§"')))))))
+                            (:Text "]")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "difference"))))))))
+                (:Text "}")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "lookaround"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "flowmarker"))))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "part"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "difference"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "term"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (lookaround
+                      (flowmarker "!")
+                      (part
+                        (element
+                          (plaintext "`->`"))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '"-"')))))
+                    (AND)
+                    (:Text "§")
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "part"))))))))
+                (:Text "]")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "term"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "oneormore")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "counted")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "repetition")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "option")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "pure_elem"))))))))
+                  (:Text ")"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "MOD_SYM"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "drop"))))))))
+                (:Text "]")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "part"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "oneormore")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "pure_elem"))))))))
+                  (:Text ")"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "MOD_SYM"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "drop"))))))))
+                (:Text "]")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "drop"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"DROP"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"Drop"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"drop"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"SKIP"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"Skip"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"skip"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "hide"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"HIDE"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"Hide"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"hide"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"DISPOSE"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"Dispose"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"dispose"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "countable"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "option")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "oneormore")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "element"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "pure_elem"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "element"))))))
+        (AND)
+        (:Text "§")
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "ANY_SUFFIX")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "element"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "retrieveop"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "symbol"))))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "is_def"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "literal")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "plaintext")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "char_ranges")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "regexp")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "char_range")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "character"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "any_char")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "whitespace")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "group")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "macro"))))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "is_def"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "placeholder"))))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "is_def"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "parser"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "ANY_SUFFIX"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (char_ranges
+                  (RE_LEADIN "/")
+                  (range_chain
+                    (:Text "[")
+                    (range_desc
+                      (free_char "?")
+                      (free_char "*"))
+                    (range_desc
+                      (free_char "+"))
+                    (:Text "]"))
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "flowmarker"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"!"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"&"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"<-!"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"<-&"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "retrieveop"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"::"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '":?"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '":"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "group"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"("')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "no_range"))))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '")"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "oneormore"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"{"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "no_range"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"}+"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "element"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"+"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "repetition"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"{"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "no_range"))))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"}"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "element"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"*"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "no_range"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "option"))
+    (DEF "=")
+    (expression
+      (sequence
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "char_range")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"["')))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"]"'))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "element"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"?"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "counted"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "countable"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "range")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "countable"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "TIMES"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "multiplier")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "multiplier"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "TIMES"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (:Text "§")
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "countable"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "range"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "RNG_BRACE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "multiplier"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":")
+                            (symbol
+                              (SYM_REGEX "RNG_DELIM"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "multiplier"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop "::")
+                (symbol
+                  (SYM_REGEX "RNG_BRACE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "no_range"))
+    (DEF "=")
+    (expression
+      (sequence
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "multiplier"))))))
+      (OR "|")
+      (sequence
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "multiplier")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "TIMES"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "multiplier"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "[1-9]\d*")
+                  (RE_LEADOUT "/"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "parser"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"@"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "name"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"("')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "argument"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '")"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "argument"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "literal")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "name"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "symbol"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "SYM_REGEX"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "literal"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE '"(?:(?<!\\)(?:\\\\)*\\"|[^"])*?"')
+                  (RE_LEADOUT "/"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "'(?:(?<!\\)(?:\\\\)*\\'|[^'])*?'")
+                  (RE_LEADOUT "/"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "’(?:(?<!\\)(?:\\\\)*\\’|[^’])*?’")
+                  (RE_LEADOUT "/"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "plaintext"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "`(?:(?<!\\)(?:\\\\)*\\`|[^`])*?`")
+                  (RE_LEADOUT "/"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "´(?:(?<!\\)(?:\\\\)*\\´|[^´])*?´")
+                  (RE_LEADOUT "/"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "regexp"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "RE_LEADIN"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "RE_CORE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "RE_LEADOUT"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "char_range"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`[`")))))
+        (AND)
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "char_range_heuristics")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (plaintext "`^`")))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (oneormore
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "range_desc"))))))))
+                (:Text "}+")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"]"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "char_ranges"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "RE_LEADIN"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "range_chain"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (plaintext "`|`")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "range_chain"))))))))
+                (:Text "}")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "RE_LEADOUT"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "range_chain"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`[`")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (plaintext "`^`")))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (oneormore
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "range_desc"))))))))
+                (:Text "}+")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`]`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "range_desc"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "character")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "free_char"))))))))
+                  (:Text ")"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (option
+                            (:Text "[")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (plaintext "`-`")))))))
+                            (:Text "]")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (group
+                              (:Text "(")
+                              (expression
+                                (sequence
+                                  (interleave
+                                    (difference
+                                      (term
+                                        (element
+                                          (symbol
+                                            (SYM_REGEX "character")))))))
+                                (OR "|")
+                                (sequence
+                                  (interleave
+                                    (difference
+                                      (term
+                                        (element
+                                          (symbol
+                                            (SYM_REGEX "free_char"))))))))
+                              (:Text ")"))))))))
+                (:Text "]")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "character"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "CH_LEADIN"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "HEXCODE"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "free_char"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (char_ranges
+                  (RE_LEADIN "/")
+                  (range_chain
+                    (:Text "[")
+                    (:Text "^")
+                    (range_desc
+                      (free_char "\n")
+                      (free_char "\["))
+                    (range_desc
+                      (free_char "\]")
+                      (free_char "\\"))
+                    (:Text "]"))
+                  (RE_LEADOUT "/")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "\\[nrtfv`´'\"(){}\[\]\/\\]")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "any_char"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"."')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "whitespace"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "~")
+                  (RE_LEADOUT "/"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "macro"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"$"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "name"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"("')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "no_range"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "expression"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (literal '","')))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "no_range"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "expression"))))))))
+                (:Text "}")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '")"')))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "placeholder"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal '"$"')))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "name"))))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (plaintext "`(`"))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "name"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "SYM_REGEX"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "EOF"))
+    (DEF "=")
+    (expression
+      (sequence
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (regexp
+                (RE_LEADIN "/")
+                (RE_CORE ".")
+                (RE_LEADOUT "/")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "ENDL"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "DEF"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "OR"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "AND"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "RNG_DELIM"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "BRACE_SIGN"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "CH_LEADIN"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "TIMES"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "RE_LEADIN"))))))))
+                (:Text "]")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (option
+                (:Text "[")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (retrieveop ":?")
+                            (symbol
+                              (SYM_REGEX "RE_LEADOUT"))))))))
+                (:Text "]")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "DEF"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "_DEF"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "_DEF"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`=`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`:=`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`::=`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`<-`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE ":\n")
+                  (RE_LEADOUT "/")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`: `")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "OR"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`|`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`/`")))))
+        (AND)
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "regex_heuristics")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "AND"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`,`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "``")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "ENDL"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`;`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "``")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "RNG_BRACE"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (retrieveop ":")
+                (symbol
+                  (SYM_REGEX "BRACE_SIGN"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "BRACE_SIGN"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`{`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`(`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "RNG_DELIM"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`,`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "TIMES"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`*`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "RE_LEADIN"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`/`")))))
+        (AND)
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (symbol
+                (SYM_REGEX "regex_heuristics"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`^/`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "RE_LEADOUT"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`/`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "CH_LEADIN"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`0x`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`%x`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`U+`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`u+`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`#x`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`\x`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`\u`"))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`\U`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "MOD_SYM"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "`->`")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "char_range_heuristics"))
+    (DEF "=")
+    (expression
+      (sequence
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (group
+                (:Text "(")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (char_ranges
+                              (RE_LEADIN "/")
+                              (range_chain
+                                (:Text "[")
+                                (range_desc
+                                  (free_char "\n"))
+                                (:Text "]"))
+                              (RE_LEADOUT "/")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "more_than_one_blank")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "literal_heuristics")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (whitespace "~")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (option
+                            (:Text "[")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (plaintext "`::`"))))))
+                              (OR "|")
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (plaintext "`:?`"))))))
+                              (OR "|")
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (plaintext "`:`")))))))
+                            (:Text "]")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "STRICT_SYM_REGEX"))))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (regexp
+                              (RE_LEADIN "/")
+                              (RE_CORE "\s*\]")
+                              (RE_LEADOUT "/"))))))))
+                (:Text ")")))))
+        (AND)
+        (lookaround
+          (flowmarker "&")
+          (part
+            (element
+              (group
+                (:Text "(")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (oneormore
+                            (:Text "{")
+                            (expression
+                              (sequence
+                                (interleave
+                                  (difference
+                                    (term
+                                      (element
+                                        (symbol
+                                          (SYM_REGEX "range_desc"))))))))
+                            (:Text "}+")))))
+                    (AND)
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (plaintext "`]`")))))))
+                (:Text ")")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "STRICT_SYM_REGEX"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "(?!\d)\w+")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "more_than_one_blank"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "[^ \]]*[ ][^ \]]*[ ]")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "literal_heuristics"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE '~?\s*"(?:[\\]\]|[^\]]|[^\\]\[[^"]*)*"')
+                  (RE_LEADOUT "/")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "~?\s*'(?:[\\]\]|[^\]]|[^\\]\[[^']*)*'")
+                  (RE_LEADOUT "/")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "~?\s*`(?:[\\]\]|[^\]]|[^\\]\[[^`]*)*`")
+                  (RE_LEADOUT "/")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "~?\s*´(?:[\\]\]|[^\]]|[^\\]\[[^´]*)*´")
+                  (RE_LEADOUT "/")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "~?\s*\/(?:[\\]\]|[^\]]|[^\\]\[[^\/]*)*\/")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "regex_heuristics"))
+    (DEF "=")
+    (expression
+      (sequence
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (group
+                (:Text "(")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (regexp
+                              (RE_LEADIN "/")
+                              (RE_CORE " +`[^`]*` +\/")
+                              (RE_LEADOUT "/")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (regexp
+                              (RE_LEADIN "/")
+                              (RE_CORE " +´[^´]*´ +\/")
+                              (RE_LEADOUT "/")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (regexp
+                              (RE_LEADIN "/")
+                              (RE_CORE " +'[^']*' +\/")
+                              (RE_LEADOUT "/")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (regexp
+                              (RE_LEADIN "/")
+                              (RE_CORE ' +"[^"]*" +\/')
+                              (RE_LEADOUT "/")))))))
+                  (OR "|")
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (regexp
+                              (RE_LEADIN "/")
+                              (RE_CORE " +\w+ +\/")
+                              (RE_LEADOUT "/"))))))))
+                (:Text ")")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (regexp
+                                (RE_LEADIN "/")
+                                (RE_CORE "[^\/\n*?+\\]*[*?+\\][^\/\n]*\/")
+                                (RE_LEADOUT "/")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (regexp
+                                (RE_LEADIN "/")
+                                (RE_CORE "[^\w]+\/")
+                                (RE_LEADOUT "/")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (char_ranges
+                                (RE_LEADIN "/")
+                                (range_chain
+                                  (:Text "[")
+                                  (:Text "^")
+                                  (range_desc
+                                    (free_char " "))
+                                  (:Text "]"))
+                                (RE_LEADOUT "/"))))))))
+                  (:Text ")"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "RE_CORE"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "(?:(?<!\\)\\(?:\/)|[^\/])*")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "SYM_REGEX"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "(?!\d)\w(?:-?\w)*")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "HEXCODE"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (regexp
+                  (RE_LEADIN "/")
+                  (RE_CORE "(?:[A-Fa-f1-9]|0(?!x)){1,8}")
+                  (RE_LEADOUT "/"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "RAISE_EXPR_WO_BRACKETS"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (plaintext "``")))))))
+    (ENDL)))

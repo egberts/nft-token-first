@@ -1,0 +1,4 @@
+This directory has been created by DHParser to store log files from
+parsing. ANY FILE IN THIS DIRECTORY CAN BE OVERWRITTEN! Therefore,
+do not place any files here and do not bother editing files in this
+directory as any changes will get lost.

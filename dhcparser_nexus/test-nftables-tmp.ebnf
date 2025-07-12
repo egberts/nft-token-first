@@ -1,0 +1,22 @@
+input = line
+
+TOKEN_EOF        =  !/./
+
+DNAT = 'dnat'
+SNAT = 'snat'
+VERDICT = 'verdict'
+REDIRECT = 'redirect'
+_NEWLINE = /\m/
+
+SEMICOLON = ';'
+
+
+/* converted on Sun Dec 22, 2024, 16:10 (UTC-06) by bison-to-w3c v0.67 which is Copyright (c) 2011-2024 by Gunther Rademacher <grd@gmx.net> */
+
+stmt_separator = NEWLINE | SEMICOLON
+
+rule_alloc = stmt
+stmt     = ( nat_stmt | redir_stmt ) | verdict_stmt
+verdict_stmt = VERDICT
+nat_stmt = SNAT | DNAT
+redir_stmt = REDIRECT

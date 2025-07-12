@@ -1,0 +1,17 @@
+
+NEWLINE ::= '\n'
+
+SEMICOLON ::= ';'
+
+ADD ::= 'add'
+
+DELETE ::= 'delete'
+
+input ::= line*
+
+stmt_separator ::= NEWLINE | SEMICOLON
+
+base_cmd ::= ADD | DELETE
+
+line     ::= stmt_separator | base_cmd ( stmt_separator | TOKEN_EOF )
+

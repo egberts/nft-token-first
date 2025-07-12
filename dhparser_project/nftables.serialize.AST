@@ -1,0 +1,497 @@
+(syntax
+  (definition
+    (symbol
+      (SYM_REGEX "input"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "line"))))))))
+                (:Text "}")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "TOKEN_EOF"))
+    (DEF "=")
+    (expression
+      (sequence
+        (lookaround
+          (flowmarker "!")
+          (part
+            (element
+              (regexp
+                (RE_LEADIN "/")
+                (RE_CORE ".")
+                (RE_LEADOUT "/")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "ABORT"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal "'abort'")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "ACCEPT"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal "'accept'")))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "ACKSEQ"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (literal "'ackseq'")))))))
+  (definition
+    (symbol
+      (SYM_REGEX "common_block"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (group
+                  (:Text "(")
+                  (expression
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "_INCLUDE"))))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "QUOTED_STRING")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "_DEFINE"))))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "identifier"))))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (literal "'='")))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "initializer_expr")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "REDEFINE"))))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "identifier"))))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (literal "'='")))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "initializer_expr")))))))
+                    (OR "|")
+                    (sequence
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "UNDEFINE"))))))
+                      (AND)
+                      (interleave
+                        (difference
+                          (term
+                            (element
+                              (symbol
+                                (SYM_REGEX "identifier"))))))))
+                  (:Text ")"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "stmt_separator"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "line"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "common_block")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "stmt_separator")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "base_cmd"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "stmt_separator")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "base_cmd"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "TOKEN_EOF"))))))))
+    (ENDL))
+  (definition
+    (symbol
+      (SYM_REGEX "base_cmd"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "ADD"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "add_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "REPLACE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "replace_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "CREATE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "create_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "INSERT"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "insert_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "DELETE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "delete_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "GET"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "get_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "LIST"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "list_cmd"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "close_scope_list")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "RESET"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "reset_cmd"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "close_scope_reset")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "FLUSH"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "flush_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "RENAME"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "rename_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "IMPORT"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "import_cmd"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "close_scope_import")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "EXPORT"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "export_cmd"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "close_scope_export")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "MONITOR"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "monitor_cmd"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "close_scope_monitor")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "DESCRIBE"))))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "describe_cmd")))))))
+      (OR "|")
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (symbol
+                  (SYM_REGEX "add_cmd"))))))))
+    (ENDL))
+
+
+

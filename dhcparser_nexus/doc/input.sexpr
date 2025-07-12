@@ -1,0 +1,28 @@
+(syntax
+  (definition
+    (symbol
+      (SYM_REGEX "input"))
+    (DEF "=")
+    (expression
+      (sequence
+        (interleave
+          (difference
+            (term
+              (element
+                (whitespace "~")))))
+        (AND)
+        (interleave
+          (difference
+            (term
+              (repetition
+                (:Text "{")
+                (expression
+                  (sequence
+                    (interleave
+                      (difference
+                        (term
+                          (element
+                            (symbol
+                              (SYM_REGEX "line"))))))))
+                (:Text "}")))))))
+    (ENDL))
