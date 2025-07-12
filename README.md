@@ -73,7 +73,7 @@ I designed a two-stage parser:
    1. how to read EBNF (in DHParse-format)
    2. how to read Netfilter `nft` CLI (in EBNF-format)
 
-For the first-stage, I leveraged [DHParser](https://dhparser.readthedocs.io/en/latest/), a [PEG parser]({filename}Parsing-Compendium.md) to read a parser file.
+For the first-stage, I leveraged [DHParser](https://dhparser.readthedocs.io/en/latest/), a [PEG parser](https://egbert.net/blog/articles/parsing-in-python-compendium.html) to read a parser file.
 
 I used a [EBNF syntax](https://github.com/egberts/nft-token-first/blob/master/dhcparser_nexus/ebnf-flexible.dhparse) file that enables reading of any EBNF file (a file that describes EBNF, ... in EBNF): That file format is for DHParse-only.  
 
