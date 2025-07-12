@@ -69,9 +69,13 @@ And used a two-stage parser.
 
 ## MORE DEETS ##  
 
+<<<<<<< Updated upstream
 I designed a two-stage parser:
    1. how to read EBNF (in DHParse-format)
    2. how to read Netfilter `nft` CLI (in EBNF-format)
+=======
+For the first-stage, I leveraged [DHParser](https://dhparser.readthedocs.io/en/latest/), a [PEG parser]({filename}Parsing-Compendium.md) to read a parser file.
+>>>>>>> Stashed changes
 
 For the first-stage, I leveraged [DHParser](https://dhparser.readthedocs.io/en/latest/), a [PEG parser]({filename}parsing-in-python-compendium.md) to read a parser file.
 
