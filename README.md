@@ -62,15 +62,22 @@ I needed to study autocompletion of Netfilter 'nft' CLI tool, which is not much 
 
 In Netfilter NFT CLI parse table, there are over 1,400 edge-state transitions.  It makes zero sense to code that up manually.
 
-I leveraged Bison tool into outputting a rudimentary EBNF (Extended Backus-Naur Form) syntax of .
+I leveraged Bison tool into reading Netfilter nftables' and outputting a rudimentary EBNF (Extended Backus-Naur Form) syntax.
+
+And used a two-stage parser.
+
 
 ## MORE DEETS ##  
 
-For the first-stage, I leveraged [DHParser](https://dhparser.readthedocs.io/en/latest/), a [PEG parser]({filename parsing-in-python-compendium.md}) to read a parser file.
+I designed a two-stage parser:
+   1. how to read EBNF (in DHParse-format)
+   2. how to read Netfilter `nft` CLI (in EBNF-format)
 
-Using DHParser, I used a EBNF syntax file that enables reading of EBNF file (a file that describes EBNF, ... in EBNF).
+For the first-stage, I leveraged [DHParser](https://dhparser.readthedocs.io/en/latest/), a [PEG parser]({filename}parsing-in-python-compendium.md) to read a parser file.
 
-Then I shoehorned Netfilter NFT CLI EBNF ... AGAIN ... thru the Python DHParser("EBNF") but this time using Netfilter NFT EBNF (supplied by Bison and bison-parse.c source file).
+I used a [EBNF syntax](https://github.com/egberts/nft-token-first/blob/master/dhcparser_nexus/ebnf-flexible.dhparse) file that enables reading of any EBNF file (a file that describes EBNF, ... in EBNF): That file format is for DHParse-only.  
+
+For the second-stage, I shoehorned Netfilter NFT CLI EBNF ... AGAIN ... thru the Python DHParser("EBNF") but this time using Netfilter NFT EBNF (supplied by Bison and [bison_parse.y](https://git.netfilter.org/nftables/tree/src/parser_bison.y)  source file).
 
 Then I wrote a leaf-tree navigator to look for only the first following token(s) (and not to go down any deeper).
 
