@@ -1,11 +1,11 @@
 
 This is about the Netfilter `nft` CLI terminal app.
 
-Given a token, list all the next valid tokens.
+Given a token, list all the next valid tokens at the NFT command prompt, given a certain point in the syntax tree.
 
-For example:
+For example, Bison 'input' symbol would produce the following token:
 
-    'input' would produce:
+
         'include'
         'undefine'
         'error'
